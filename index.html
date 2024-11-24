@@ -11,37 +11,64 @@
             margin: 0 auto;
             padding: 20px;
             background-color: #f0f8ff;
+            text-align: center;
         }
+
         .fact-card {
             background: white;
             padding: 20px;
-            margin: 10px 0;
+            margin: 20px auto;
             border-radius: 10px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            cursor: pointer;
-            transition: transform 0.3s ease;
+            max-width: 600px;
+            display: none;
         }
-        .fact-card:hover {
-            transform: scale(1.02);
+
+        .fact-card.active {
+            display: block;
+            animation: fadeIn 0.5s;
         }
-        .share-button {
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .main-button {
             background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            margin: 20px;
+            transition: background-color 0.3s;
+        }
+
+        .main-button:hover {
+            background: #45a049;
+        }
+
+        .share-button {
+            background: #2196F3;
             color: white;
             border: none;
             padding: 8px 16px;
             border-radius: 5px;
             cursor: pointer;
-            float: right;
+            margin-top: 10px;
         }
+
         h1 {
             color: #2c3e50;
-            text-align: center;
         }
     </style>
 </head>
 <body>
     <h1>🍛 Sri Lankan Food Fun Facts 🫖</h1>
-    <div id="facts-container"></div>
+    <button id="showFactButton" class="main-button">Show Food Fun Facts!</button>
+    <div id="fact-container"></div>
 
     <script>
         const foodFacts = {
@@ -81,17 +108,26 @@
             ]
         };
 
-        function createFactCards() {
-            const container = document.getElementById('facts-container');
-            foodFacts.sriLankanFoodFacts.forEach(factObj => {
+        let currentFactIndex = 0;
+        const container = document.getElementById('fact-container');
+        const showFactButton = document.getElementById('showFactButton');
+
+        function showNextFact() {
+            container.innerHTML = '';
+            if (currentFactIndex < foodFacts.sriLankanFoodFacts.length) {
+                const factObj = foodFacts.sriLankanFoodFacts[currentFactIndex];
                 const card = document.createElement('div');
-                card.className = 'fact-card';
+                card.className = 'fact-card active';
                 card.innerHTML = `
                     <p>${factObj.fact}</p>
                     <button class="share-button" onclick="shareFact(${factObj.id})">Share</button>
                 `;
                 container.appendChild(card);
-            });
+                currentFactIndex++;
+                if (currentFactIndex === foodFacts.sriLankanFoodFacts.length) {
+                    currentFactIndex = 0;
+                }
+            }
         }
 
         function shareFact(id) {
@@ -108,7 +144,7 @@
             }
         }
 
-        createFactCards();
+        showFactButton.addEventListener('click', showNextFact);
     </script>
 </body>
 </html>
